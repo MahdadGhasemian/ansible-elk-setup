@@ -1,0 +1,28 @@
+---
+all:
+  hosts:
+    monitoring:
+      ansible_host: 192.168.1.100
+      ansible_user: root
+      ansible_ssh_private_key_file: ~/.ssh/id_ed25519
+
+  vars:
+    elk:
+      # tr -cd a-zA-Z0-9 </dev/urandom | head -c "64" ; echo ""
+      elastic_password: "ChangeMe"
+      logstash_internal_password: "ChangeMe"
+      kibana_system_password: "ChangeMe"
+      metricbeat_internal_password: "ChangeMe"
+      filebeat_internal_password: "ChangeMe"
+      heartbeat_internal_password: "ChangeMe"
+      monitoring_internal_password: "ChangeMe"
+      beats_system_password: "ChangeMe"
+      # openssl rand -hex 32
+      xpack_security_encryptionKey: "ChangeMe"
+      xpack_encryptedSavedObjects_encryptionKey: "ChangeMe"
+      xpack_reporting_encryptionKey: "ChangeMe"
+    proxy:
+      host: "proxy.corp.com"
+      port: "8080"
+      user: "myuser"
+      pass: "pass"

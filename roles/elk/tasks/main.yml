@@ -1,0 +1,10 @@
+---
+# - name: "ELK: Load Docker Images"
+#   ansible.builtin.include_tasks:
+#     file: "load-docker-images.yml"
+#   tags: 
+#     - load-elk-docker-images
+
+- name: "ELK: Setup"
+  ansible.builtin.include_tasks:
+    file: "setup.yml"

@@ -1,0 +1,18 @@
+---
+elk_version: "9.1.4"
+elk_compose_dir: "/opt/elk"
+
+# tr -cd a-zA-Z0-9 </dev/urandom | head -c "64" ; echo ""
+elastic_password: "StrongElasticPass"
+logstash_internal_password: "StrongLogstashPass"
+kibana_system_password: "StrongKibanaPass"
+metricbeat_internal_password: "StrongMetricbeatPass"
+filebeat_internal_password: "StrongFilebeatPass"
+heartbeat_internal_password: "StrongHeartbeatPass"
+monitoring_internal_password: "StrongMonitoringPass"
+beats_system_password: "StrongBeatsPass"
+
+# openssl rand -hex 32
+xpack_security_encryptionKey: "StrongEncryptionKey32CharsLong!"
+xpack_encryptedSavedObjects_encryptionKey: "StrongEncryptionKey32CharsLong!"
+xpack_reporting_encryptionKey: "StrongEncryptionKey32CharsLong!"

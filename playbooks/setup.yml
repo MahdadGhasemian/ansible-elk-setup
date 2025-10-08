@@ -1,0 +1,29 @@
+---
+- name: Setup
+  hosts: monitoring
+  become: true
+  gather_facts: true
+  roles:
+    - role: docker
+      tags:
+        - docker
+      vars:
+        docker_proxy_host: "{{ proxy.host }}"
+        docker_proxy_port: "{{ proxy.port }}"
+        docker_proxy_user: "{{ proxy.user }}"
+        docker_proxy_pass: "{{ proxy.pass }}"
+    - role: elk
+      tags:
+        - elk
+      vars:
+        elastic_password: "{{ elk.elastic_password }}"
+        logstash_internal_password: "{{ elk.logstash_internal_password }}"
+        kibana_system_password: "{{ elk.kibana_system_password }}"
+        metricbeat_internal_password: "{{ elk.metricbeat_internal_password }}"
+        filebeat_internal_password: "{{ elk.filebeat_internal_password }}"
+        heartbeat_internal_password: "{{ elk.heartbeat_internal_password }}"
+        monitoring_internal_password: "{{ elk.monitoring_internal_password }}"
+        beats_system_password: "{{ elk.beats_system_password }}"
+        xpack_security_encryptionKey: "{{ elk.xpack_security_encryptionKey }}"
+        xpack_encryptedSavedObjects_encryptionKey: "{{ elk.xpack_encryptedSavedObjects_encryptionKey }}"
+        xpack_reporting_encryptionKey: "{{ elk.xpack_reporting_encryptionKey }}"

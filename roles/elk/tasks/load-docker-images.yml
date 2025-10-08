@@ -1,0 +1,40 @@
+---
+- name: Ensure docker-images temp directory exists
+  ansible.builtin.file:
+    path: /tmp/elk-docker-images
+    state: directory
+    mode: "0755"
+
+- name: Check if each image is already loaded (via marker file)
+  ansible.builtin.stat:
+    path: "/tmp/.loaded-{{ item | splitext | first }}"
+  register: image_load_check
+  loop:
+    - elasticsearch-9.1.4.tar
+    - kibana-9.1.4.tar
+    - logstash-9.1.4.tar
+    - filebeat-9.1.4.tar
+    - heartbeat-9.1.4.tar
+    - metricbeat-9.1.4.tar
+    - elastic-agent-9.1.4.tar
+
+- name: Copy only required image tarballs to target
+  ansible.builtin.copy:
+    src: "docker-images/{{ item.item }}"
+    dest: "/tmp/elk-docker-images/{{ item.item }}"
+    mode: "0644"
+  loop: "{{ image_load_check.results }}"
+  when: not item.stat.exists
+
+- name: Load only un-loaded Docker images
+  ansible.builtin.command: docker load -i /tmp/elk-docker-images/{{ item.item }}
+  args:
+    creates: "/tmp/.loaded-{{ item.item | splitext | first }}"
+  loop: "{{ image_load_check.results }}"
+  when: not item.stat.exists
+
+# - name: Clean up image tarballs after loading
+#   ansible.builtin.file:
+#     path: /tmp/elk-docker-images
+#     state: absent
+#   when: elk_cleanup_images | default(true)

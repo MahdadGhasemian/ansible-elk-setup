@@ -1,0 +1,76 @@
+---
+# Ensure ELK target directory exists
+- name: Ensure ELK directory exists
+  ansible.builtin.file:
+    path: "{{ elk_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+# Copy full ELK directory (configs, Dockerfiles, extensions, setup)
+- name: Copy ELK directory
+  ansible.posix.synchronize:
+    src: files/elk/
+    dest: "{{ elk_compose_dir }}/"
+    recursive: yes
+    perms: yes
+    owner: yes
+    group: yes
+    archive: yes
+  tags:
+    - elk-copy-files
+
+- name: Deploy Kibana configuration from template
+  ansible.builtin.template:
+    src: kibana.yml.j2
+    dest: "{{ elk_compose_dir }}/kibana/config/kibana.yml"
+    mode: '0644'
+    owner: root
+    group: root
+  tags:
+    - elk-copy-files
+
+# Copy environment file (templated)
+- name: Copy environment file
+  ansible.builtin.template:
+    src: templates/.env.j2
+    dest: "{{ elk_compose_dir }}/.env"
+    mode: "0600"
+
+# Check if ELK setup has already been run
+- name: Check if ELK setup already run
+  ansible.builtin.stat:
+    path: "{{ elk_compose_dir }}/.setup_done"
+  register: setup_done
+
+# Run ELK setup service only once
+- name: Run ELK setup (one-time)
+  community.docker.docker_compose_v2:
+    project_src: "{{ elk_compose_dir }}"
+    services:
+      - setup
+    profiles:
+      - setup
+    state: present
+    recreate: always
+    wait: yes
+  when: not setup_done.stat.exists
+
+# Create marker file to indicate setup has been completed
+- name: Mark ELK setup as done
+  ansible.builtin.file:
+    path: "{{ elk_compose_dir }}/.setup_done"
+    state: touch
+  when: not setup_done.stat.exists
+
+# Start all other ELK services
+- name: Start all ELK services
+  community.docker.docker_compose_v2:
+    project_src: "{{ elk_compose_dir }}"
+    state: present
+    recreate: auto
+    wait: yes
+  when: setup_done.stat.exists
+  environment:
+    HTTP_PROXY: "http://JlOZia892Z:E1uqKgzqc2@95.217.133.130:55623"
+    HTTPS_PROXY: "http://JlOZia892Z:E1uqKgzqc2@95.217.133.130:55623"
+    NO_PROXY: "localhost,127.0.0.1,docker.internal"

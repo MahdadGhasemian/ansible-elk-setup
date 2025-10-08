@@ -1,0 +1,4 @@
+---
+- name: "Docker: Setup"
+  ansible.builtin.include_tasks:
+    file: "docker.yml"

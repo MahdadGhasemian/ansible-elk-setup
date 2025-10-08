@@ -1,0 +1,11 @@
+---
+docker_proxy_host: "proxy.corp.com"
+docker_proxy_port: 8080
+docker_proxy_user: "myuser"
+docker_proxy_pass: "pass"
+docker_no_proxy:
+  - localhost
+  - 127.0.0.1
+  - .internal
+  - 10.0.0.0/8
+  - "{{ ansible_default_ipv4.address | default('127.0.0.1') }}"
