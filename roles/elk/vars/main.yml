@@ -1,6 +1,6 @@
 ---
 elk_version: "9.1.4"
-elk_compose_dir: "/opt/elk"
+elk_compose_dir: "/home/elk"
 
 # tr -cd a-zA-Z0-9 </dev/urandom | head -c "64" ; echo ""
 elastic_password: "StrongElasticPass"

@@ -5,6 +5,8 @@
     path: "{{ elk_compose_dir }}"
     state: directory
     mode: "0755"
+  tags:
+    - elk-setup
 
 # Copy full ELK directory (configs, Dockerfiles, extensions, setup)
 - name: Copy ELK directory
@@ -17,7 +19,7 @@
     group: yes
     archive: yes
   tags:
-    - elk-copy-files
+    - elk-setup
 
 - name: Deploy Kibana configuration from template
   ansible.builtin.template:
@@ -27,7 +29,7 @@
     owner: root
     group: root
   tags:
-    - elk-copy-files
+    - elk-setup
 
 # Copy environment file (templated)
 - name: Copy environment file
@@ -35,15 +37,11 @@
     src: templates/.env.j2
     dest: "{{ elk_compose_dir }}/.env"
     mode: "0600"
+  tags:
+    - elk-setup
 
-# Check if ELK setup has already been run
-- name: Check if ELK setup already run
-  ansible.builtin.stat:
-    path: "{{ elk_compose_dir }}/.setup_done"
-  register: setup_done
-
-# Run ELK setup service only once
-- name: Run ELK setup (one-time)
+# Run ELK setup service
+- name: Run ELK setup
   community.docker.docker_compose_v2:
     project_src: "{{ elk_compose_dir }}"
     services:
@@ -53,24 +51,15 @@
     state: present
     recreate: always
     wait: yes
-  when: not setup_done.stat.exists
+  tags:
+    - elk-setup
 
-# Create marker file to indicate setup has been completed
-- name: Mark ELK setup as done
-  ansible.builtin.file:
-    path: "{{ elk_compose_dir }}/.setup_done"
-    state: touch
-  when: not setup_done.stat.exists
-
-# Start all other ELK services
+# Start all ELK services
 - name: Start all ELK services
   community.docker.docker_compose_v2:
     project_src: "{{ elk_compose_dir }}"
     state: present
     recreate: auto
     wait: yes
-  when: setup_done.stat.exists
-  environment:
-    HTTP_PROXY: "http://JlOZia892Z:E1uqKgzqc2@95.217.133.130:55623"
-    HTTPS_PROXY: "http://JlOZia892Z:E1uqKgzqc2@95.217.133.130:55623"
-    NO_PROXY: "localhost,127.0.0.1,docker.internal"
+  tags:
+    - elk-main

@@ -1,4 +1,6 @@
 [Service]
+{% if docker_proxy_is_enabled | default(false) %}
 Environment="HTTP_PROXY=http://{{ docker_proxy_user }}:{{ docker_proxy_pass }}@{{ docker_proxy_host }}:{{ docker_proxy_port }}"
 Environment="HTTPS_PROXY=http://{{ docker_proxy_user }}:{{ docker_proxy_pass }}@{{ docker_proxy_host }}:{{ docker_proxy_port }}"
 Environment="NO_PROXY={{ docker_no_proxy | join(',') }}"
+{% endif %}

@@ -1,4 +1,5 @@
 ---
+docker_proxy_is_enabled: false
 docker_proxy_host: "proxy.corp.com"
 docker_proxy_port: 8080
 docker_proxy_user: "myuser"

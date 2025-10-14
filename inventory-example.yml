@@ -22,6 +22,7 @@ all:
       xpack_encryptedSavedObjects_encryptionKey: "ChangeMe"
       xpack_reporting_encryptionKey: "ChangeMe"
     proxy:
+      is_enabled: false
       host: "proxy.corp.com"
       port: "8080"
       user: "myuser"

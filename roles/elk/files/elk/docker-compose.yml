@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   # The 'setup' service runs a one-off script which initializes users inside
   # Elasticsearch — such as 'logstash_internal' and 'kibana_system' — with the
@@ -66,7 +64,7 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
-      - elasticsearch_data:/usr/share/elasticsearch/data:Z
+      - elasticsearch_data:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
       - 9300:9300

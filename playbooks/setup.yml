@@ -6,15 +6,14 @@
   roles:
     - role: docker
       tags:
-        - docker
+        - docker-setup
       vars:
+        docker_proxy_is_enabled: "{{ proxy.is_enabled }}"
         docker_proxy_host: "{{ proxy.host }}"
         docker_proxy_port: "{{ proxy.port }}"
         docker_proxy_user: "{{ proxy.user }}"
         docker_proxy_pass: "{{ proxy.pass }}"
     - role: elk
-      tags:
-        - elk
       vars:
         elastic_password: "{{ elk.elastic_password }}"
         logstash_internal_password: "{{ elk.logstash_internal_password }}"
